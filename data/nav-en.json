@@ -1,0 +1,32 @@
+{
+  "groups": [
+    {
+      "label": "Sections",
+      "items": [
+        { "type": "link", "label": "Home", "href": "index.html" },
+        {
+          "type": "expand",
+          "id": "flash",
+          "label": "Flashing",
+          "href": "page-flash.html",
+          "openOn": [{ "file": "page-flash.html" }],
+          "children": [
+            { "label": "Web flasher", "href": "page-flash.html#universal" },
+            { "label": "qESPHACK (automatic)", "href": "page-flash.html#automatic" },
+            { "label": "qESPHACK", "href": "page-flash.html#qesphack" }
+          ]
+        },
+        {
+          "type": "expand",
+          "id": "modules",
+          "label": "Modules",
+          "href": "page-modules.html",
+          "openOn": [{ "file": "page-modules.html" }],
+          "children": [
+            { "label": "NRF24 wiring", "href": "page-modules.html#nrf24" }
+          ]
+        }
+      ]
+    }
+  ]
+}

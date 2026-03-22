@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flashing — ESP-HACK</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <script src="../js/site-nav.js" defer></script>
+    <script src="../js/render-downloads.js" defer></script>
+  </head>
+  <body>
+    <div class="lang-switch lang-switch--en" role="navigation" aria-label="Language">
+      <div class="lang-switch__track">
+        <span class="lang-switch__thumb" aria-hidden="true"></span>
+        <a href="../page-flash.html" class="lang-switch__opt">RU</a>
+        <span class="lang-switch__opt lang-switch__opt--current" aria-current="page">EN</span>
+      </div>
+    </div>
+    <div class="shell shell--nav-left">
+      <aside class="sidebar" aria-label="Wiki navigation">
+        <div class="sidebar__inner">
+          <div class="sidebar__brand">ESP-HACK</div>
+          <nav aria-label="Wiki sections">
+            <div id="site-nav-container"></div>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="content__wrap">
+          <h1>Installation / flashing</h1>
+
+          <h2 id="universal">Universal method</h2>
+          <p>
+            Open a web flasher in your browser, for example
+            <a href="https://esp.huhn.me/">esp.huhn.me</a>, connect the ESP over USB, and pick the
+            firmware file from
+            <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a>. The
+            <code>0x0</code> address is usually left as-is. Click <strong>PROGRAM</strong>; if needed,
+            run <strong>ERASE</strong> first.
+          </p>
+
+          <figure class="flash-install-figure">
+            <img
+              src="../images/flash-install.png"
+              alt="Web flasher: selected firmware file, ERASE and PROGRAM buttons"
+              width="800"
+              height="480"
+            />
+          </figure>
+
+          <h2 id="automatic">Automatic method (qESPHACK)</h2>
+          <p>
+            Download <strong>qESPHACK.exe</strong> from
+            <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a>
+            or from the file list below. Run the utility and follow the steps in the window.
+          </p>
+
+          <div id="downloads-root" class="downloads-stack" aria-live="polite"></div>
+
+          <h2 id="qesphack">Using qESPHACK</h2>
+          <p>
+            Go to <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a> and download
+            <strong>qESPHACK.exe</strong>.
+          </p>
+          <p>
+            Then select your display and wait until installation (flashing) finishes.
+          </p>
+          <p>
+            <strong>qESPHACK</strong> finds the latest <code>.bin</code> for the selected display and
+            downloads it automatically.
+          </p>
+
+          <figure class="terminal-shot">
+            <img
+              src="../images/qesphack-terminal.png"
+              alt="qESPHACK terminal: flashing progress and success"
+              width="900"
+              height="520"
+            />
+          </figure>
+
+          <figure class="terminal-shot">
+            <img
+              src="../images/qesphack-display.png"
+              alt="qESPHACK: display type selection"
+              width="900"
+              height="520"
+            />
+          </figure>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

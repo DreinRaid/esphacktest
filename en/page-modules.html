@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Modules — ESP-HACK</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <script src="../js/site-nav.js" defer></script>
+  </head>
+  <body>
+    <div class="lang-switch lang-switch--en" role="navigation" aria-label="Language">
+      <div class="lang-switch__track">
+        <span class="lang-switch__thumb" aria-hidden="true"></span>
+        <a href="../page-modules.html" class="lang-switch__opt">RU</a>
+        <span class="lang-switch__opt lang-switch__opt--current" aria-current="page">EN</span>
+      </div>
+    </div>
+    <div class="shell shell--nav-left">
+      <aside class="sidebar" aria-label="Wiki navigation">
+        <div class="sidebar__inner">
+          <div class="sidebar__brand">ESP-HACK</div>
+          <nav aria-label="Wiki sections">
+            <div id="site-nav-container"></div>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="content__wrap">
+          <h1>Modules</h1>
+          <p>
+            Module and pin wiring. Empty cells are shown as
+            <span class="cell-empty">—</span>.
+          </p>
+
+          <div class="table-wrap">
+            <table class="module-table">
+              <thead>
+                <tr>
+                  <th scope="col">Module</th>
+                  <th scope="col">Pin</th>
+                  <th scope="col">Pin</th>
+                  <th scope="col">Pin</th>
+                  <th scope="col">Pin</th>
+                  <th scope="col">Pin</th>
+                  <th scope="col">Pin</th>
+                  <th scope="col">Pin</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">
+                    <span class="module-name">
+                      <span class="module-name__icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M2 3.5A1.5 1.5 0 013.5 2h9A1.5 1.5 0 0114 3.5v6A1.5 1.5 0 0112.5 11h-9A1.5 1.5 0 012 9.5v-6z"
+                            stroke="currentColor"
+                            stroke-width="1.2"
+                          />
+                          <path d="M6 13h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                          <path d="M8 11v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                        </svg>
+                      </span>
+                      Display
+                    </span>
+                  </th>
+                  <td>VCC → 3V3</td>
+                  <td>GND → GND</td>
+                  <td>SCL → G22</td>
+                  <td>SDA → G21</td>
+                  <td class="cell-empty">—</td>
+                  <td class="cell-empty">—</td>
+                  <td class="cell-empty">—</td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span class="module-name">
+                      <span class="module-name__icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="5" cy="8" r="2" stroke="currentColor" stroke-width="1.2" />
+                          <circle cx="11" cy="8" r="2" stroke="currentColor" stroke-width="1.2" />
+                        </svg>
+                      </span>
+                      Buttons
+                    </span>
+                  </th>
+                  <td>UP → G27</td>
+                  <td>DOWN → G26</td>
+                  <td>OK → G33</td>
+                  <td>BACK → G32</td>
+                  <td class="cell-empty">—</td>
+                  <td class="cell-empty">—</td>
+                  <td class="cell-empty">—</td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span class="module-name">
+                      <span class="module-name__icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect x="3" y="5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.2" />
+                          <path d="M5 12v1.5M8 12v1.5M11 12v1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                        </svg>
+                      </span>
+                      CC1101
+                    </span>
+                  </th>
+                  <td>1 → GND</td>
+                  <td>2 → 3V3</td>
+                  <td>3 → G4</td>
+                  <td>4 → G5</td>
+                  <td>5 → G18</td>
+                  <td>6 → G23</td>
+                  <td>7 → G19</td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span class="module-name">
+                      <span class="module-name__icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M8 2v3M6 5h4M5 14c0-2 1.5-3 3-3s3 1 3 3"
+                            stroke="currentColor"
+                            stroke-width="1.2"
+                            stroke-linecap="round"
+                          />
+                          <circle cx="8" cy="10" r="3" stroke="currentColor" stroke-width="1.2" />
+                        </svg>
+                      </span>
+                      IR
+                    </span>
+                  </th>
+                  <td>IR-TX → G16</td>
+                  <td>IR-RX → G35</td>
+                  <td class="cell-empty">—</td>
+                  <td class="cell-empty">—</td>
+                  <td class="cell-empty">—</td>
+                  <td class="cell-empty">—</td>
+                  <td class="cell-empty">—</td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span class="module-name">
+                      <span class="module-name__icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M4 3v10M8 3v10M12 3v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                          <path d="M3 6h10M3 10h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                        </svg>
+                      </span>
+                      GPIO
+                    </span>
+                  </th>
+                  <td>A → G16</td>
+                  <td>B → G2</td>
+                  <td>C → G18</td>
+                  <td>D → G23</td>
+                  <td>E → G19</td>
+                  <td>F → G25</td>
+                  <td class="cell-empty">—</td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span class="module-name">
+                      <span class="module-name__icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M4 4.5h7l2 2v7a1 1 0 01-1 1H4a1 1 0 01-1-1v-8a1 1 0 011-1z"
+                            stroke="currentColor"
+                            stroke-width="1.2"
+                            stroke-linejoin="round"
+                          />
+                          <path d="M11 4.5v2h2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                        </svg>
+                      </span>
+                      SD Card
+                    </span>
+                  </th>
+                  <td>3v3 → 3v3</td>
+                  <td>CS → G15</td>
+                  <td>MOSI → G13</td>
+                  <td>CLK → G14</td>
+                  <td>MISO → G17</td>
+                  <td>GND → GND</td>
+                  <td class="cell-empty">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="nrf24">Wiring NRF24</h2>
+          <p>Check the GPIO pinout for your board, then follow this pinout:</p>
+
+          <div class="nrf-pin-table-wrap nrf-card">
+            <div class="nrf-card__head">
+              <div class="nrf-card__titles">
+                <span class="nrf-card__title">NRF24 wiring</span>
+                <span class="nrf-card__subtitle">Module pins → ESP-HACK · A–E = GPIO row above</span>
+              </div>
+              <button type="button" class="nrf-card__copy" aria-label="Copy table">Copy</button>
+            </div>
+            <div class="nrf-card__body">
+              <table class="nrf-table">
+                <thead>
+                  <tr>
+                    <th scope="col">NRF24</th>
+                    <th scope="col">ESP-HACK</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1 (GND)</th>
+                    <td>GND</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2 (VCC)</th>
+                    <td>3V3</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3 (CE)</th>
+                    <td>A (G16)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4 (CSN)</th>
+                    <td>B (G2)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">5 (SCK)</th>
+                    <td>C (G18)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">6 (MOSI)</th>
+                    <td>D (G23)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">7 (MISO)</th>
+                    <td>E (G19)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script>
+      document.querySelectorAll(".code-block__copy, .nrf-card__copy").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var text;
+          var nrfWrap = btn.closest(".nrf-pin-table-wrap");
+          if (nrfWrap) {
+            var table = nrfWrap.querySelector("table");
+            if (!table) return;
+            var lines = ["NRF24 | ESP-HACK"];
+            table.querySelectorAll("tbody tr").forEach(function (tr) {
+              var th = tr.querySelector('th[scope="row"]');
+              var td = tr.querySelector("td");
+              if (th && td) {
+                lines.push(th.textContent.trim() + " > " + td.textContent.trim());
+              }
+            });
+            text = lines.join("\n");
+          } else {
+            var block = btn.closest(".code-block");
+            var code = block && block.querySelector("pre code");
+            if (!code) return;
+            text = code.textContent;
+          }
+          var label = btn.textContent;
+          var copied =
+            location.pathname.indexOf("/en/") !== -1 ? "Copied" : "Скопировано";
+          function done() {
+            btn.textContent = copied;
+            setTimeout(function () {
+              btn.textContent = label;
+            }, 1400);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done).catch(function () {});
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
