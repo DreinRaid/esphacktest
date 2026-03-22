@@ -73,6 +73,96 @@
     return '<div class="admin-error" role="alert">' + esc(msg) + "</div>";
   }
 
+  function normalizeKeyFileSha256(s) {
+    var t = String(s || "")
+      .trim()
+      .toLowerCase()
+      .replace(/^0x/, "");
+    if (/^[0-9a-f]{64}$/.test(t)) return t;
+    return "";
+  }
+
+  function hexEqConstantTime(a, b) {
+    if (a.length !== b.length) return false;
+    var x = 0;
+    for (var i = 0; i < a.length; i++) {
+      x |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+    return x === 0;
+  }
+
+  function sha256HexOfBuffer(buf) {
+    return crypto.subtle.digest("SHA-256", buf).then(function (hashBuf) {
+      var a = new Uint8Array(hashBuf);
+      var hex = "";
+      for (var i = 0; i < a.length; i++) {
+        hex += ("0" + a[i].toString(16)).slice(-2);
+      }
+      return hex;
+    });
+  }
+
+  function renderKeyFileGate(gate, err) {
+    var hint = gate.githubLoginHint
+      ? '<p class="admin-muted">Подсказка логина GitHub: <code>' +
+        esc(gate.githubLoginHint) +
+        "</code></p>"
+      : "";
+    var noCrypto =
+      !window.crypto || !window.crypto.subtle
+        ? renderError(
+            "Нужен HTTPS и браузер с Web Crypto (сайт на GitHub Pages подходит)."
+          )
+        : "";
+    root.innerHTML =
+      '<div class="admin-wrap">' +
+      '<div class="admin-card">' +
+      "<h1>Вход в админку</h1>" +
+      "<p>Выберите <strong>секретный ключевой файл</strong> с вашего компьютера. Его содержимое на сервер не отправляется — в репозитории хранится только SHA-256; без файла подобрать вход нельзя.</p>" +
+      "<p class=\"admin-muted\">Это не защита от того, кто может править код сайта: у кого есть полный контроль над Pages, тот может обойти проверку.</p>" +
+      hint +
+      noCrypto +
+      '<form id="keygate-form">' +
+      '<div class="admin-field"><label for="keyf">Ключевой файл</label><input id="keyf" name="keyf" type="file" required /></div>' +
+      '<div class="admin-actions"><button type="submit" class="admin-btn admin-btn--primary">Проверить и далее</button></div>' +
+      "</form>" +
+      (err ? renderError(err) : "") +
+      "</div></div>";
+
+    var form = document.getElementById("keygate-form");
+    if (!form || !window.crypto || !window.crypto.subtle) return;
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var inp = document.getElementById("keyf");
+      var f = inp && inp.files && inp.files[0];
+      if (!f) {
+        renderKeyFileGate(gate, "Выберите файл.");
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function () {
+        var buf = reader.result;
+        sha256HexOfBuffer(buf)
+          .then(function (hex) {
+            if (hexEqConstantTime(hex, gate.keyFileSha256)) {
+              sessionStorage.setItem(SESSION_PANEL, "1");
+              renderGhGate(gate, "", gate.githubLoginHint || "");
+            } else {
+              renderKeyFileGate(gate, "Файл не подходит (не совпадает SHA-256).");
+            }
+          })
+          .catch(function () {
+            renderKeyFileGate(gate, "Не удалось прочитать или хешировать файл.");
+          });
+      };
+      reader.onerror = function () {
+        renderKeyFileGate(gate, "Не удалось прочитать файл.");
+      };
+      reader.readAsArrayBuffer(f);
+    });
+  }
+
   function renderPanelGate(gate, err) {
     var hint = gate.githubLoginHint
       ? '<p class="admin-muted">Подсказка логина GitHub: <code>' +
@@ -301,14 +391,26 @@
   }
 
   function normalizeGate(raw) {
-    if (!raw || !raw.panelLogin || raw.panelPassword == null || raw.panelPassword === "") {
+    raw = raw || {};
+    var k = normalizeKeyFileSha256(raw.keyFileSha256);
+    if (k) {
+      return {
+        usePanel: true,
+        useKeyFile: true,
+        keyFileSha256: k,
+        branch: raw.branch || "main",
+        githubLoginHint: raw.githubLoginHint || "",
+      };
+    }
+    if (!raw.panelLogin || raw.panelPassword == null || raw.panelPassword === "") {
       var g = defaultGate();
-      if (raw && raw.githubLoginHint) g.githubLoginHint = raw.githubLoginHint;
-      if (raw && raw.branch) g.branch = raw.branch;
+      if (raw.githubLoginHint) g.githubLoginHint = raw.githubLoginHint;
+      if (raw.branch) g.branch = raw.branch;
       return g;
     }
     return {
       usePanel: true,
+      useKeyFile: false,
       panelLogin: raw.panelLogin,
       panelPassword: raw.panelPassword,
       branch: raw.branch || "main",
@@ -336,7 +438,11 @@
             renderGhGate(gate, "", sessionStorage.getItem(SESSION_GH_USER) || gate.githubLoginHint || "");
             return;
           }
-          renderPanelGate(gate, "");
+          if (gate.useKeyFile) {
+            renderKeyFileGate(gate, "");
+          } else {
+            renderPanelGate(gate, "");
+          }
           return;
         }
         renderGhGate(gate, "", gate.githubLoginHint || "");

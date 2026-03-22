@@ -1,6 +1,7 @@
 {
-  "panelLogin": "admin",
-  "panelPassword": "придумай_свой",
+  "keyFileSha256": "",
+  "panelLogin": "",
+  "panelPassword": "",
   "githubLoginHint": "",
   "branch": "main"
 }
