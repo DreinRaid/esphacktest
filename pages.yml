@@ -29,9 +29,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Минификация + mangling только в артефакт Pages; в git остаётся читаемый admin/app.js.
-      - name: Minify admin script (deploy)
-        run: npx --yes terser@5 admin/app.js -c passes=2 -m -o admin/app.min.js && mv admin/app.min.js admin/app.js
+      - name: Fetch firmware binaries for web flasher
+        env:
+          FW_SH: https://github.com/Teapot174/ESP-HACK/releases/latest/download/esp-hack_v0.8-sh.bin
+          FW_SSD: https://github.com/Teapot174/ESP-HACK/releases/latest/download/esp-hack_v0.8-ssd.bin
+        run: |
+          mkdir -p firmware
+          curl -fL --retry 3 -o firmware/esp-hack-sh.bin "$FW_SH"
+          curl -fL --retry 3 -o firmware/esp-hack-ssd.bin "$FW_SSD"
 
       - name: Configure Pages
         uses: actions/configure-pages@v4

@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Прошивка — ESP-HACK</title>
     <link rel="stylesheet" href="css/style.css" />
+    <script
+      type="module"
+      src="https://unpkg.com/esp-web-tools@10.2.1/dist/web/install-button.js?module"
+    ></script>
     <script src="js/site-nav.js" defer></script>
     <script src="js/render-downloads.js" defer></script>
   </head>
@@ -30,13 +34,35 @@
         <div class="content__wrap">
           <h1>Установка / прошивка</h1>
 
-          <h2 id="universal">Универсальный способ</h2>
+          <section class="flash-web-tools" id="web-flasher" aria-label="Веб-прошивальщик">
+            <h2>Прошивка в браузере на этом сайте</h2>
+            <p>
+              Нужны <strong>Google Chrome</strong> или <strong>Microsoft Edge</strong>, кабель USB и страница по
+              <strong>HTTPS</strong> (так работает GitHub Pages). Подключите ESP32, нажмите кнопку под ваш дисплей и
+              следуйте шагам в окне прошивальщика.
+            </p>
+            <div class="flash-web-tools__row">
+              <esp-web-install-button manifest="data/flasher-manifest-sh.json">
+                <button type="button" slot="activate" class="flash-web-btn">Прошить SH1106</button>
+              </esp-web-install-button>
+              <esp-web-install-button manifest="data/flasher-manifest-ssd.json">
+                <button type="button" slot="activate" class="flash-web-btn">Прошить SSD1306</button>
+              </esp-web-install-button>
+            </div>
+            <p>
+              Прошивки подставляются при деплое сайта из
+              <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a>. Если кнопка не качает файл,
+              проверьте workflow (имена <code>.bin</code> в релизе) или прошейте вручную через сайт ниже.
+            </p>
+          </section>
+
+          <h2 id="universal">Другой веб-прошивальщик</h2>
           <p>
-            Откройте в браузере веб-прошивальщик, например
-            <a href="https://esp.huhn.me/">esp.huhn.me</a>, подключите ESP по USB и выберите файл
-            прошивки из <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a>. Адрес
-            <code>0x0</code> обычно не меняют. Нажмите <strong>PROGRAM</strong>; при необходимости
-            сначала <strong>ERASE</strong>.
+            Можно открыть, например,
+            <a href="https://esp.huhn.me/">esp.huhn.me</a>, подключить ESP по USB и выбрать файл прошивки из
+            <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a>. Адрес
+            <code>0x0</code> обычно не меняют. Нажмите <strong>PROGRAM</strong>; при необходимости сначала
+            <strong>ERASE</strong>.
           </p>
 
           <figure class="flash-install-figure">

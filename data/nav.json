@@ -11,6 +11,7 @@
           "href": "page-flash.html",
           "openOn": [{ "file": "page-flash.html" }],
           "children": [
+            { "label": "Веб-прошивальщик", "href": "page-flash.html#web-flasher" },
             { "label": "Универсальный способ", "href": "page-flash.html#universal" },
             { "label": "Автоматический способ", "href": "page-flash.html#automatic" },
             { "label": "qESPHACK", "href": "page-flash.html#qesphack" }

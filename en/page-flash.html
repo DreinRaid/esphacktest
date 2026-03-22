@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Flashing — ESP-HACK</title>
     <link rel="stylesheet" href="../css/style.css" />
+    <script
+      type="module"
+      src="https://unpkg.com/esp-web-tools@10.2.1/dist/web/install-button.js?module"
+    ></script>
     <script src="../js/site-nav.js" defer></script>
     <script src="../js/render-downloads.js" defer></script>
   </head>
@@ -30,14 +34,34 @@
         <div class="content__wrap">
           <h1>Installation / flashing</h1>
 
-          <h2 id="universal">Universal method</h2>
+          <section class="flash-web-tools" id="web-flasher" aria-label="Web flasher">
+            <h2>Flash in the browser (this site)</h2>
+            <p>
+              Use <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>, a USB cable, and this page over
+              <strong>HTTPS</strong> (e.g. GitHub Pages). Plug in your ESP32, pick the button for your display, and
+              follow the installer dialog.
+            </p>
+            <div class="flash-web-tools__row">
+              <esp-web-install-button manifest="../data/flasher-manifest-sh.json">
+                <button type="button" slot="activate" class="flash-web-btn">Flash SH1106</button>
+              </esp-web-install-button>
+              <esp-web-install-button manifest="../data/flasher-manifest-ssd.json">
+                <button type="button" slot="activate" class="flash-web-btn">Flash SSD1306</button>
+              </esp-web-install-button>
+            </div>
+            <p>
+              Binaries are pulled from
+              <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a> during the site deploy. If
+              download fails, check the workflow asset names or use the external flasher below.
+            </p>
+          </section>
+
+          <h2 id="universal">External web flasher</h2>
           <p>
-            Open a web flasher in your browser, for example
-            <a href="https://esp.huhn.me/">esp.huhn.me</a>, connect the ESP over USB, and pick the
-            firmware file from
-            <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a>. The
-            <code>0x0</code> address is usually left as-is. Click <strong>PROGRAM</strong>; if needed,
-            run <strong>ERASE</strong> first.
+            For example, open
+            <a href="https://esp.huhn.me/">esp.huhn.me</a>, connect the ESP over USB, and pick the firmware from
+            <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a>. Leave
+            <code>0x0</code> as usual. Click <strong>PROGRAM</strong>; run <strong>ERASE</strong> first if needed.
           </p>
 
           <figure class="flash-install-figure">
