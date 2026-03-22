@@ -1,0 +1,125 @@
+.admin-body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 24px;
+  background: var(--gh-canvas);
+  color: var(--gh-fg);
+}
+
+.admin-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.admin-card {
+  padding: 24px;
+  border: 1px solid var(--gh-border);
+  border-radius: 10px;
+  background: var(--gh-surface);
+  margin-bottom: 20px;
+}
+
+.admin-card h1 {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+}
+
+.admin-card p {
+  margin: 0 0 16px;
+  color: var(--gh-fg-muted);
+  font-size: 14px;
+}
+
+.admin-field {
+  margin-bottom: 14px;
+}
+
+.admin-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gh-fg-muted);
+}
+
+.admin-field input,
+.admin-field select {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  color: var(--gh-fg);
+  background: var(--gh-canvas-subtle);
+  border: 1px solid var(--gh-border);
+  border-radius: 6px;
+}
+
+.admin-field input[type="password"] {
+  font-family: var(--font-mono);
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.admin-btn {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: var(--gh-fg);
+  background: var(--gh-surface-hover);
+  border: 1px solid var(--gh-border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.admin-btn:hover {
+  background: var(--gh-border-muted);
+}
+
+.admin-btn--primary {
+  color: #fff;
+  background: var(--gh-accent);
+  border-color: var(--gh-accent);
+}
+
+.admin-btn--primary:hover {
+  filter: brightness(1.08);
+}
+
+.admin-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #f85149;
+  background: rgba(248, 81, 73, 0.1);
+  border: 1px solid rgba(248, 81, 73, 0.35);
+  border-radius: 6px;
+}
+
+.admin-editor textarea {
+  width: 100%;
+  min-height: 420px;
+  box-sizing: border-box;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--gh-fg);
+  background: var(--gh-canvas-subtle);
+  border: 1px solid var(--gh-border);
+  border-radius: 6px;
+  resize: vertical;
+}
+
+.admin-muted {
+  font-size: 12px;
+  color: var(--gh-fg-muted);
+  margin-top: 12px;
+}
