@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ESP-HACK — Wiki</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/site-nav.js" defer></script>
+    <script src="js/render-changelog.js" defer></script>
+  </head>
+  <body>
+    <div class="lang-switch lang-switch--ru" role="navigation" aria-label="Язык">
+      <div class="lang-switch__track">
+        <span class="lang-switch__thumb" aria-hidden="true"></span>
+        <span class="lang-switch__opt lang-switch__opt--current" aria-current="page">RU</span>
+        <a href="en/index.html" class="lang-switch__opt">EN</a>
+      </div>
+    </div>
+    <div class="shell shell--nav-left">
+      <aside class="sidebar" aria-label="Навигация по разделам">
+        <div class="sidebar__inner">
+          <div class="sidebar__brand">ESP-HACK</div>
+          <nav aria-label="Разделы вики">
+            <div id="site-nav-container"></div>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="content__wrap">
+          <h1>Добро пожаловать в вики ESP-HACK!</h1>
+
+          <p>
+            ESP-HACK — проект для ESP32, который позволяет заниматься пентестингом. У проекта своя
+            прошивка и своё устройство.
+          </p>
+          <p>В этой вики собраны инструкции по прошивке, модулям и подключению оборудования.</p>
+
+          <section
+            id="changelog"
+            class="changelog"
+            aria-labelledby="changelog-heading"
+            data-releases-fallback="https://github.com/Teapot174/ESP-HACK/releases"
+          >
+            <h2 id="changelog-heading">Список изменений</h2>
+            <p class="changelog__meta" id="changelog-meta"></p>
+            <div class="changelog__body" id="changelog-body">
+              <p class="changelog__loading">Загрузка…</p>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

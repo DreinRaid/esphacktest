@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Прошивка — ESP-HACK</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/site-nav.js" defer></script>
+    <script src="js/render-downloads.js" defer></script>
+  </head>
+  <body>
+    <div class="lang-switch lang-switch--ru" role="navigation" aria-label="Язык">
+      <div class="lang-switch__track">
+        <span class="lang-switch__thumb" aria-hidden="true"></span>
+        <span class="lang-switch__opt lang-switch__opt--current" aria-current="page">RU</span>
+        <a href="en/page-flash.html" class="lang-switch__opt">EN</a>
+      </div>
+    </div>
+    <div class="shell shell--nav-left">
+      <aside class="sidebar" aria-label="Навигация по разделам">
+        <div class="sidebar__inner">
+          <div class="sidebar__brand">ESP-HACK</div>
+          <nav aria-label="Разделы вики">
+            <div id="site-nav-container"></div>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="content__wrap">
+          <h1>Установка / прошивка</h1>
+
+          <h2 id="universal">Универсальный способ</h2>
+          <p>
+            Откройте в браузере веб-прошивальщик, например
+            <a href="https://esp.huhn.me/">esp.huhn.me</a>, подключите ESP по USB и выберите файл
+            прошивки из <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a>. Адрес
+            <code>0x0</code> обычно не меняют. Нажмите <strong>PROGRAM</strong>; при необходимости
+            сначала <strong>ERASE</strong>.
+          </p>
+
+          <figure class="flash-install-figure">
+            <img
+              src="images/flash-install.png"
+              alt="Веб-прошивальщик: выбранный файл прошивки, кнопки ERASE и PROGRAM"
+              width="800"
+              height="480"
+            />
+          </figure>
+
+          <h2 id="automatic">Автоматический способ (qESPHACK)</h2>
+          <p>
+            Скачайте <strong>qESPHACK.exe</strong> на странице
+            <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a>
+            или из списка файлов ниже. Запустите утилиту и следуйте шагам в окне программы.
+          </p>
+
+          <div id="downloads-root" class="downloads-stack" aria-live="polite"></div>
+
+          <h2 id="qesphack">Работа qESPHACK</h2>
+          <p>
+            Зайдите в <a href="https://github.com/Teapot174/ESP-HACK/releases">Releases</a> и скачайте
+            <strong>qESPHACK.exe</strong>.
+          </p>
+          <p>
+            Далее выберите ваш дисплей, после чего дождитесь окончания установки (прошивки).
+          </p>
+          <p>
+            <strong>qESPHACK</strong> сам находит последний <code>.bin</code> под нужный дисплей и
+            скачивает его.
+          </p>
+
+          <figure class="terminal-shot">
+            <img
+              src="images/qesphack-terminal.png"
+              alt="Терминал qESPHACK: запись прошивки, прогресс, успешное завершение"
+              width="900"
+              height="520"
+            />
+          </figure>
+
+          <figure class="terminal-shot">
+            <img
+              src="images/qesphack-display.png"
+              alt="qESPHACK: выбор типа дисплея"
+              width="900"
+              height="520"
+            />
+          </figure>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
