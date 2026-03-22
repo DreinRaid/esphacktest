@@ -2,6 +2,8 @@
   var root = document.getElementById("downloads-root");
   if (!root) return;
 
+  var cfgRef = null;
+
   function dataBase() {
     return location.pathname.indexOf("/en/") !== -1 ? "../" : "";
   }
@@ -196,22 +198,54 @@
     root.innerHTML = renderSection(title, subtitle, items);
   }
 
+  function downloadsApiRepo(cfg) {
+    var o = cfg.downloadOwner;
+    var r = cfg.downloadRepo;
+    if (o != null && String(o).trim() !== "" && r != null && String(r).trim() !== "") {
+      return { owner: String(o).trim(), repo: String(r).trim() };
+    }
+    return { owner: cfg.owner, repo: cfg.repo };
+  }
+
+  function downloadsReleasesPageHref(cfg) {
+    if (cfg && cfg.downloadReleasesPageUrl && String(cfg.downloadReleasesPageUrl).trim() !== "") {
+      return String(cfg.downloadReleasesPageUrl).trim();
+    }
+    if (cfg) {
+      var pair = downloadsApiRepo(cfg);
+      return "https://github.com/" + pair.owner + "/" + pair.repo + "/releases";
+    }
+    return "https://github.com/Teapot174/ESP-HACK/releases";
+  }
+
   function loadGithub(cfg) {
-    var url =
+    var pair = downloadsApiRepo(cfg);
+    var base =
       "https://api.github.com/repos/" +
-      encodeURIComponent(cfg.owner) +
+      encodeURIComponent(pair.owner) +
       "/" +
-      encodeURIComponent(cfg.repo) +
-      "/releases/latest";
-    return fetch(url, {
+      encodeURIComponent(pair.repo) +
+      "/releases";
+    return fetch(base + "/latest", {
       headers: { Accept: "application/vnd.github+json" },
       cache: "no-store",
     }).then(function (r) {
-      if (r.status === 403) {
-        throw new Error("rate");
+      if (r.status === 403) throw new Error("rate");
+      if (r.ok) return r.json();
+      if (r.status === 404) {
+        return fetch(base + "?per_page=1", {
+          headers: { Accept: "application/vnd.github+json" },
+          cache: "no-store",
+        }).then(function (r2) {
+          if (r2.status === 403) throw new Error("rate");
+          if (!r2.ok) throw new Error("github");
+          return r2.json().then(function (arr) {
+            if (!Array.isArray(arr) || arr.length === 0) throw new Error("github");
+            return arr[0];
+          });
+        });
       }
-      if (!r.ok) throw new Error("github");
-      return r.json();
+      throw new Error("github");
     });
   }
 
@@ -228,6 +262,7 @@
       return r.json();
     })
     .then(function (cfg) {
+      cfgRef = cfg;
       if (cfg.useGithubApi === false) {
         return fetchStatic().then(renderFromStatic);
       }
@@ -240,8 +275,13 @@
         });
     })
     .catch(function () {
+      var href = esc(downloadsReleasesPageHref(cfgRef));
       root.innerHTML = isEn()
-        ? '<p class="downloads-error">Could not load files. Open <a href="https://github.com/Teapot174/ESP-HACK/releases">releases on GitHub</a>.</p>'
-        : '<p class="downloads-error">Не удалось загрузить файлы. Откройте <a href="https://github.com/Teapot174/ESP-HACK/releases">релизы на GitHub</a>.</p>';
+        ? '<p class="downloads-error">Could not load files. Open <a href="' +
+          href +
+          '" rel="noopener noreferrer">releases on GitHub</a>.</p>'
+        : '<p class="downloads-error">Не удалось загрузить файлы. Откройте <a href="' +
+          href +
+          '" rel="noopener noreferrer">релизы на GitHub</a>.</p>';
     });
 })();

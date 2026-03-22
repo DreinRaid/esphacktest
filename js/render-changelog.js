@@ -5,6 +5,7 @@
   if (!bodyEl || !section) return;
 
   var cfgCache = null;
+  var SKIP_RELEASE_RENDER = {};
 
   function dataBase() {
     return location.pathname.indexOf("/en/") !== -1 ? "../" : "";
@@ -198,6 +199,75 @@
     if (metaEl) metaEl.textContent = "";
   }
 
+  function githubReleaseHeaders() {
+    return { Accept: "application/vnd.github+json" };
+  }
+
+  function changelogApiRepo(cfg) {
+    var o = cfg.changelogOwner;
+    var r = cfg.changelogRepo;
+    if (o != null && String(o).trim() !== "" && r != null && String(r).trim() !== "") {
+      return { owner: String(o).trim(), repo: String(r).trim() };
+    }
+    o = cfg.downloadOwner;
+    r = cfg.downloadRepo;
+    if (o != null && String(o).trim() !== "" && r != null && String(r).trim() !== "") {
+      return { owner: String(o).trim(), repo: String(r).trim() };
+    }
+    return { owner: cfg.owner, repo: cfg.repo };
+  }
+
+  function fetchRelease(cfg) {
+    var pair = changelogApiRepo(cfg);
+    var base =
+      "https://api.github.com/repos/" +
+      encodeURIComponent(pair.owner) +
+      "/" +
+      encodeURIComponent(pair.repo) +
+      "/releases";
+    return fetch(base + "/latest", {
+      headers: githubReleaseHeaders(),
+      cache: "no-store",
+    }).then(function (r) {
+      if (r.status === 403) throw new Error("rate");
+      if (r.ok) return r.json();
+      if (r.status === 404) {
+        return fetch(base + "?per_page=1", {
+          headers: githubReleaseHeaders(),
+          cache: "no-store",
+        }).then(function (r2) {
+          if (r2.status === 403) throw new Error("rate");
+          if (!r2.ok) throw new Error("release");
+          return r2.json().then(function (arr) {
+            if (!Array.isArray(arr) || arr.length === 0) return null;
+            return arr[0];
+          });
+        });
+      }
+      throw new Error("release");
+    });
+  }
+
+  function showNoReleasesYet() {
+    showError(
+      isEn()
+        ? "This repository has no releases yet. When you publish a release, its notes will appear here."
+        : "В этом репозитории пока нет релизов. После публикации релиза описание появится здесь."
+    );
+    var fallback =
+      (cfgCache && cfgCache.releasesPageUrl) ||
+      section.getAttribute("data-releases-fallback");
+    if (metaEl && fallback) {
+      var a =
+        '<a href="' +
+        esc(fallback) +
+        '" rel="noopener noreferrer">' +
+        esc(isEn() ? "Releases" : "Релизы") +
+        "</a>";
+      metaEl.innerHTML = isEn() ? "See " + a + "." : "Смотрите " + a + ".";
+    }
+  }
+
   fetch(dataBase() + "data/github-release.json", { cache: "no-store" })
     .then(function (r) {
       if (!r.ok) throw new Error("cfg");
@@ -207,7 +277,7 @@
       cfgCache = cfg;
       if (cfg.changelogEnabled === false) {
         hideSection();
-        return null;
+        return SKIP_RELEASE_RENDER;
       }
       if (cfg.useGithubApi === false) {
         showError(
@@ -215,25 +285,16 @@
             ? "Changelog is only available when loading from GitHub Releases."
             : "Список изменений доступен только при загрузке с GitHub Releases."
         );
-        return null;
+        return SKIP_RELEASE_RENDER;
       }
-      var url =
-        "https://api.github.com/repos/" +
-        encodeURIComponent(cfg.owner) +
-        "/" +
-        encodeURIComponent(cfg.repo) +
-        "/releases/latest";
-      return fetch(url, {
-        headers: { Accept: "application/vnd.github+json" },
-        cache: "no-store",
-      }).then(function (r) {
-        if (r.status === 403) throw new Error("rate");
-        if (!r.ok) throw new Error("release");
-        return r.json();
-      });
+      return fetchRelease(cfg);
     })
     .then(function (release) {
-      if (!release) return;
+      if (release === SKIP_RELEASE_RENDER) return;
+      if (release === null || release === undefined) {
+        showNoReleasesYet();
+        return;
+      }
       var published = fmtDate(release.published_at);
       var pageUrl = release.html_url || "";
       var tag = release.tag_name || "";
