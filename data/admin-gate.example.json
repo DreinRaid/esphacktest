@@ -1,6 +1,6 @@
 {
   "keyFileSha256": "",
-  "timewebApiBaseUrl": "",
+  "timewebApiBaseUrl": "http://95.140.159.108:3001",
   "panelLogin": "",
   "panelPassword": "",
   "githubLoginHint": "",
