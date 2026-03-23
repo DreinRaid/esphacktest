@@ -2,5 +2,10 @@
 data/admin-gate.json
 admin.key
 
+# Не деплоим зависимости и локальные секреты админ-прокси
+server/admin-api/node_modules/
+server/admin-api/package-lock.json
+server/admin-api/.env
+
 # Собранные прошивки для веб-прошивальщика (подставляются в CI, локально можно положить вручную)
 firmware/*.bin
