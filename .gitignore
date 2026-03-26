@@ -9,3 +9,8 @@ server/admin-api/.env
 
 # Собранные прошивки для веб-прошивальщика (подставляются в CI, локально можно положить вручную)
 firmware/*.bin
+
+server/
+admin/
+data/admin-gate.json
+admin.key

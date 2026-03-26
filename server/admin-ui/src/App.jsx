@@ -1086,12 +1086,90 @@ function MediaTab({ onError }) {
 }
 
 function SettingsTab() {
+  const [status, setStatus] = useState("");
+  const [health, setHealth] = useState(null);
+  const [version, setVersion] = useState(null);
+  const [whoami, setWhoami] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  async function runDiagnostics() {
+    setBusy(true);
+    setStatus("Проверяю API...");
+    try {
+      const h = await api("/healthz", { method: "GET" });
+      const v = await api("/versionz", { method: "GET" });
+      const w = await api("/api/admin/whoami", { method: "GET" });
+      setHealth(h);
+      setVersion(v);
+      setWhoami(w);
+      setStatus("Диагностика ок.");
+    } catch (e) {
+      setStatus(`Ошибка: ${e?.message || String(e)}`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function exportNav() {
+    setBusy(true);
+    setStatus("Готовлю export nav.json...");
+    try {
+      const j = await api("/api/admin/contents?path=data%2Fnav.json&branch=main", { method: "GET" });
+      const blob = new Blob([String(j.content || "")], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "nav.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      setStatus("nav.json экспортирован.");
+    } catch (e) {
+      setStatus(`Ошибка export: ${e?.message || String(e)}`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  useEffect(() => {
+    runDiagnostics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="panel">
       <div className="rowItemTitle">Настройки</div>
       <div className="hint">Рабочая ветка: <span className="code">main</span>. Авторизация через серверную сессию.</div>
       <div className="hr" />
-      <div className="hint">Этот раздел больше не заглушка. Здесь будут опции публикации и шаблоны страниц.</div>
+      <div className="toolbar">
+        <button className="btn mini" type="button" disabled={busy} onClick={runDiagnostics}>
+          Проверить API
+        </button>
+        <button className="btn mini" type="button" disabled={busy} onClick={exportNav}>
+          Экспорт nav.json
+        </button>
+        {status ? <div className="hint">{status}</div> : null}
+      </div>
+
+      <div className="list">
+        <div className="rowItem">
+          <div>
+            <div className="rowItemTitle">healthz</div>
+            <div className="rowItemMeta code">{health ? JSON.stringify(health) : "—"}</div>
+          </div>
+        </div>
+        <div className="rowItem">
+          <div>
+            <div className="rowItemTitle">versionz</div>
+            <div className="rowItemMeta code">{version ? JSON.stringify(version) : "—"}</div>
+          </div>
+        </div>
+        <div className="rowItem">
+          <div>
+            <div className="rowItemTitle">whoami</div>
+            <div className="rowItemMeta code">{whoami ? JSON.stringify(whoami) : "—"}</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
