@@ -1,0 +1,39 @@
+:root {
+  --bg: #0f0f10;
+  --panel: #17171a;
+  --panel2: #1f1f23;
+  --border: #2a2a2f;
+  --text: #f4f4f5;
+  --muted: #a1a1aa;
+  --btn: #2a2a2f;
+  --btnHover: #3a3a42;
+  --danger: #ef4444;
+  --focus: rgba(244, 244, 245, 0.22);
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-headings: ui-rounded, "SF Pro Rounded", "Segoe UI Variable Display", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-brand: "Planet Kosmos", var(--font-sans);
+  font-family: var(--font-sans);
+  color: var(--text);
+  background: var(--bg);
+}
+
+@font-face {
+  font-family: "Planet Kosmos";
+  src: url("/css/fonts/PlanetKosmos.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}

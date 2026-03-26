@@ -1,0 +1,266 @@
+.wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.card {
+  width: 560px;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.title {
+  font-family: var(--font-brand);
+  font-weight: 900;
+  font-size: 18px;
+  margin-bottom: 6px;
+  text-transform: lowercase;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.form {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.input {
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
+  padding: 0 12px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: rgba(244, 244, 245, 0.3);
+  box-shadow: 0 0 0 4px var(--focus);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: var(--btn);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--btnHover);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  background: var(--btnHover);
+}
+
+.error {
+  margin-top: 4px;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+}
+
+.side {
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.brand {
+  font-family: var(--font-brand);
+  font-weight: 1000;
+  letter-spacing: 0.3px;
+  text-transform: lowercase;
+}
+
+.sideMuted {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.nav {
+  margin-top: 8px;
+  display: grid;
+  gap: 6px;
+}
+
+.navItem {
+  text-align: left;
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  padding: 10px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.navItem:hover {
+  background: var(--panel2);
+  border-color: var(--border);
+}
+
+.navItemActive {
+  background: var(--panel2);
+  border-color: rgba(244, 244, 245, 0.22);
+}
+
+.sideFooter {
+  margin-top: auto;
+}
+
+.main {
+  padding: 18px;
+}
+
+.mainTop {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.mainTitle {
+  font-family: var(--font-headings);
+  font-weight: 1000;
+  font-size: 16px;
+}
+
+.mainMuted {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.panel {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.list {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.rowItem {
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rowItemTitle {
+  font-weight: 900;
+}
+
+.rowItemMeta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.mini {
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.inputSm {
+  height: 36px;
+}
+
+.code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.hr {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 0;
+}
+
+@media (max-width: 960px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+  .side {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}

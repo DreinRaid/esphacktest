@@ -16,9 +16,19 @@
   --radius-sm: 6px;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Segoe UI Mono", monospace;
+  --font-brand: "Planet Kosmos", var(--font-sans);
+  --font-headings: ui-rounded, "SF Pro Rounded", "Segoe UI Variable Display", "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
   --ease-press: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-press: 0.14s;
   --dur-hover: 0.18s;
+}
+
+@font-face {
+  font-family: "Planet Kosmos";
+  src: url("fonts/PlanetKosmos.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @media (min-width: 1440px) {
@@ -157,13 +167,22 @@ a:hover {
 }
 
 .sidebar__brand {
-  font-weight: 600;
+  font-family: var(--font-brand);
+  font-weight: 800;
   font-size: 17px;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
   color: var(--gh-fg);
   padding: 4px 10px 16px;
   border-bottom: 1px solid var(--gh-border-muted);
   margin-bottom: 16px;
+  text-transform: lowercase;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-headings);
 }
 
 .nav-group__title {

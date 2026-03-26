@@ -3,6 +3,8 @@ const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
 const crypto = require("crypto");
+const path = require("path");
+const fs = require("fs");
 require("dotenv").config();
 
 const app = express();
@@ -148,6 +150,45 @@ app.use(
 app.get("/favicon.ico", function (req, res) {
   res.status(204).end();
 });
+
+// Serve the built admin UI assets (React/Vite) under /admin/
+// Note: /admin/ index.html is handled in the /admin/ route below (with a legacy fallback).
+function getAdminUiDistDir() {
+  // Support both layouts:
+  // 1) repo layout:   server/admin-api/index.js + ../admin-ui/dist
+  // 2) single folder: /root/EspHackAdmin/index.js + ./admin-ui/dist
+  const candidates = [
+    path.join(__dirname, "..", "admin-ui", "dist"),
+    path.join(__dirname, "admin-ui", "dist"),
+  ];
+  for (let i = 0; i < candidates.length; i++) {
+    const dir = candidates[i];
+    try {
+      if (fs.existsSync(path.join(dir, "index.html"))) return dir;
+    } catch (e) {}
+  }
+  return candidates[0];
+}
+
+app.use(
+  "/admin",
+  express.static(getAdminUiDistDir(), {
+    fallthrough: true,
+    index: false,
+    etag: false,
+    maxAge: 0,
+  })
+);
+
+// Expose shared brand fonts for admin UI (served from /css/fonts/*).
+app.use(
+  "/css/fonts",
+  express.static(path.join(__dirname, "css", "fonts"), {
+    fallthrough: true,
+    etag: false,
+    maxAge: 0,
+  })
+);
 
 app.get("/healthz", function (req, res) {
   res.json({ ok: true });
@@ -3283,6 +3324,15 @@ function adminFilesEditorHtml() {
 }
 
 app.get("/admin/", function (req, res) {
+  // Prefer the new React UI build (server/admin-ui/dist).
+  // Fallback to legacy inlined UI if dist is not built.
+  const distDir = getAdminUiDistDir();
+  const indexFile = path.join(distDir, "index.html");
+  if (fs.existsSync(indexFile)) {
+    res.set("Cache-Control", "no-store");
+    return res.sendFile(indexFile);
+  }
+
   res.set("Cache-Control", "no-store");
   res.type("html").send(adminFilesEditorHtml());
 });
@@ -3471,6 +3521,211 @@ app.post("/api/admin/commit", requireAuth, async function (req, res) {
     });
 
     res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ ok: false, message: e.message || String(e) });
+  }
+});
+
+app.post("/api/admin/delete", requireAuth, async function (req, res) {
+  try {
+    const body = req.body || {};
+    const targetPath = validatePath(body.path);
+    const branch = String(body.branch || GH_BRANCH);
+    if (!targetPath) return res.status(403).json({ ok: false, message: "Path not allowed" });
+    if (branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+    if (!GH_OWNER || !GH_REPO || !GITHUB_TOKEN) return res.status(500).json({ ok: false, message: "GitHub env not configured" });
+
+    const getPath =
+      "/repos/" +
+      encodeURIComponent(GH_OWNER) +
+      "/" +
+      encodeURIComponent(GH_REPO) +
+      "/contents/" +
+      encodeGitHubPath(targetPath) +
+      "?ref=" +
+      encodeURIComponent(branch);
+
+    const delPath =
+      "/repos/" +
+      encodeURIComponent(GH_OWNER) +
+      "/" +
+      encodeURIComponent(GH_REPO) +
+      "/contents/" +
+      encodeGitHubPath(targetPath);
+
+    const cur = await ghFetchJson(getPath, GITHUB_TOKEN);
+    const sha = cur && cur.sha;
+    if (!sha) return res.status(500).json({ ok: false, message: "Missing sha" });
+
+    await ghFetchJson(delPath, GITHUB_TOKEN, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: "Delete " + targetPath + " via Timeweb admin proxy",
+        sha,
+        branch,
+      }),
+    });
+
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ ok: false, message: e.message || String(e) });
+  }
+});
+
+app.post("/api/admin/move", requireAuth, async function (req, res) {
+  try {
+    const body = req.body || {};
+    const fromPath = validatePath(body.fromPath);
+    const toPath = validatePath(body.toPath);
+    const branch = String(body.branch || GH_BRANCH);
+    if (!fromPath || !toPath) return res.status(403).json({ ok: false, message: "Path not allowed" });
+    if (branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+    if (!GH_OWNER || !GH_REPO || !GITHUB_TOKEN) return res.status(500).json({ ok: false, message: "GitHub env not configured" });
+    if (fromPath === toPath) return res.json({ ok: true });
+
+    const srcGet =
+      "/repos/" +
+      encodeURIComponent(GH_OWNER) +
+      "/" +
+      encodeURIComponent(GH_REPO) +
+      "/contents/" +
+      encodeGitHubPath(fromPath) +
+      "?ref=" +
+      encodeURIComponent(branch);
+
+    const dstPut =
+      "/repos/" +
+      encodeURIComponent(GH_OWNER) +
+      "/" +
+      encodeURIComponent(GH_REPO) +
+      "/contents/" +
+      encodeGitHubPath(toPath);
+
+    const srcDel =
+      "/repos/" +
+      encodeURIComponent(GH_OWNER) +
+      "/" +
+      encodeURIComponent(GH_REPO) +
+      "/contents/" +
+      encodeGitHubPath(fromPath);
+
+    const src = await ghFetchJson(srcGet, GITHUB_TOKEN);
+    const sha = src && src.sha;
+    const content = src && src.content ? String(src.content).replace(/\n/g, "") : "";
+    if (!sha || !content) return res.status(500).json({ ok: false, message: "Source missing content/sha" });
+
+    // Create/overwrite destination with the same base64 content.
+    await ghFetchJson(dstPut, GITHUB_TOKEN, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: "Move " + fromPath + " -> " + toPath + " via Timeweb admin proxy",
+        content,
+        branch,
+      }),
+    });
+
+    // Delete source.
+    await ghFetchJson(srcDel, GITHUB_TOKEN, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: "Delete " + fromPath + " after move via Timeweb admin proxy",
+        sha,
+        branch,
+      }),
+    });
+
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ ok: false, message: e.message || String(e) });
+  }
+});
+
+function slugifyPageName(input) {
+  const s = String(input || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9\-]/g, "")
+    .replace(/\-+/g, "-")
+    .replace(/^\-+|\-+$/g, "");
+  return s;
+}
+
+function pageTemplateRu(title) {
+  const t = String(title || "Новая страница").trim() || "Новая страница";
+  return `<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${t} — ESP-HACK</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/site-nav.js" defer></script>
+  </head>
+  <body>
+    <div class="lang-switch lang-switch--ru" role="navigation" aria-label="Язык">
+      <div class="lang-switch__track">
+        <span class="lang-switch__thumb" aria-hidden="true"></span>
+        <span class="lang-switch__opt lang-switch__opt--current" aria-current="page">RU</span>
+        <a href="en/index.html" class="lang-switch__opt">EN</a>
+      </div>
+    </div>
+    <div class="shell shell--nav-left">
+      <aside class="sidebar" aria-label="Навигация по разделам">
+        <div class="sidebar__inner">
+          <div class="sidebar__brand">ESP-HACK</div>
+          <nav aria-label="Разделы вики">
+            <div id="site-nav-container"></div>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="content__wrap">
+          <h1>${t}</h1>
+          <p>Новый контент…</p>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>`;
+}
+
+app.post("/api/admin/page/create", requireAuth, async function (req, res) {
+  try {
+    const body = req.body || {};
+    const title = String(body.title || "Новая страница");
+    const slug = slugifyPageName(body.slug || title);
+    const branch = String(body.branch || GH_BRANCH);
+    if (!slug) return res.status(400).json({ ok: false, message: "Bad slug" });
+    if (branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+    if (!GH_OWNER || !GH_REPO || !GITHUB_TOKEN) return res.status(500).json({ ok: false, message: "GitHub env not configured" });
+
+    const filePath = validatePath("page-" + slug + ".html");
+    if (!filePath) return res.status(403).json({ ok: false, message: "Path not allowed" });
+
+    const putPath =
+      "/repos/" +
+      encodeURIComponent(GH_OWNER) +
+      "/" +
+      encodeURIComponent(GH_REPO) +
+      "/contents/" +
+      encodeGitHubPath(filePath);
+
+    await ghFetchJson(putPath, GITHUB_TOKEN, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: "Create " + filePath + " via Timeweb admin proxy",
+        content: Buffer.from(pageTemplateRu(title), "utf8").toString("base64"),
+        branch,
+      }),
+    });
+
+    res.json({ ok: true, path: filePath });
   } catch (e) {
     res.status(500).json({ ok: false, message: e.message || String(e) });
   }
