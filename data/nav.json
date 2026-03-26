@@ -20,6 +20,10 @@
           ],
           "children": [
             {
+              "label": "Функции прошивки",
+              "href": "page-features.html"
+            },
+            {
               "label": "Веб-прошивальщик",
               "href": "page-flash.html#web-flasher"
             },

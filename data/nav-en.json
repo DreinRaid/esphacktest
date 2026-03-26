@@ -11,6 +11,7 @@
           "href": "page-flash.html",
           "openOn": [{ "file": "page-flash.html" }],
           "children": [
+            { "label": "Firmware features", "href": "page-features.html" },
             { "label": "Web flasher (this site)", "href": "page-flash.html#web-flasher" },
             { "label": "Web flasher (external)", "href": "page-flash.html#universal" },
             { "label": "qESPHACK (automatic)", "href": "page-flash.html#automatic" },

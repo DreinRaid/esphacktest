@@ -143,6 +143,12 @@ app.use(
   })
 );
 
+// Avoid browser requesting a missing favicon and getting text/html back
+// (some browsers then report confusing JS parse errors).
+app.get("/favicon.ico", function (req, res) {
+  res.status(204).end();
+});
+
 app.get("/healthz", function (req, res) {
   res.json({ ok: true });
 });
@@ -168,33 +174,34 @@ function adminUiHtml() {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
     <title>ESP-HACK Admin</title>
     <style>
       body {
         margin: 0;
         padding: 24px;
         font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-        color: #e6edf3;
-        background: #0d1117;
+        color: #f4f4f5;
+        background: #27272a;
       }
       .card {
         max-width: 1180px;
         margin: 0 auto;
-        background: #161b22;
-        border: 1px solid #30363d;
+        background: #3f3f46;
+        border: 1px solid #18181b;
         border-radius: 10px;
         padding: 20px;
       }
       h1 { margin: 0 0 12px; font-size: 20px; }
-      .muted { color: #8b949e; font-size: 13px; margin-top: 6px; }
-      label { display: block; margin: 0 0 6px; font-size: 13px; font-weight: 600; color: #8b949e; }
+      .muted { color: #d4d4d8; font-size: 13px; margin-top: 6px; }
+      label { display: block; margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #d4d4d8; }
       input, textarea, select {
         width: 100%;
         box-sizing: border-box;
-        border: 1px solid #30363d;
+        border: 1px solid #18181b;
         border-radius: 6px;
-        background: #010409;
-        color: #e6edf3;
+        background: #52525b;
+        color: #f4f4f5;
         padding: 10px 12px;
         font-size: 14px;
       }
@@ -207,24 +214,24 @@ function adminUiHtml() {
       button {
         cursor: pointer;
         padding: 10px 18px;
-        border: 1px solid #30363d;
+        border: 1px solid #18181b;
         border-radius: 6px;
-        background: #30363d;
-        color: #e6edf3;
-        font-weight: 700;
+        background: #52525b;
+        color: #f4f4f5;
+        font-weight: 800;
       }
 
       button:hover {
-        background: #21262d;
+        background: #71717a;
       }
       button.secondary { background: transparent; }
       .err {
         margin-top: 12px;
         padding: 10px 12px;
-        border: 1px solid #d2a8a8;
-        background: #2a0f0f;
+        border: 1px solid #18181b;
+        background: #52525b;
         border-radius: 8px;
-        color: #f2cbdc;
+        color: #f4f4f5;
       }
 
       .builder {
@@ -232,10 +239,10 @@ function adminUiHtml() {
       }
 
       .panel {
-        border: 1px solid #30363d;
+        border: 1px solid #18181b;
         border-radius: 10px;
         padding: 12px;
-        background: #161b22;
+        background: #3f3f46;
         margin-top: 10px;
       }
 
@@ -265,16 +272,16 @@ function adminUiHtml() {
       .btn-mini {
         padding: 8px 12px;
         border-radius: 8px;
-        border: 1px solid #30363d;
+        border: 1px solid #18181b;
         background: transparent;
-        color: #e6edf3;
-        font-weight: 700;
+        color: #f4f4f5;
+        font-weight: 800;
         cursor: pointer;
       }
 
       .btn-mini--danger {
-        border-color: #30363d;
-        background: rgba(210, 168, 168, 0.04);
+        border-color: #18181b;
+        background: #52525b;
       }
 
       .anim-pop {
@@ -2212,15 +2219,16 @@ function adminFilesEditorHtml() {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
     <title>ESP-HACK Admin (site editor)</title>
     <style>
       :root {
-        --bg: #0d1117;
-        --card: #161b22;
-        --border: #30363d;
-        --fg: #e6edf3;
-        --muted: #8b949e;
-        --muted2: #6e7781;
+        --bg: #27272a;
+        --card: #3f3f46;
+        --border: #18181b;
+        --fg: #f4f4f5;
+        --muted: #d4d4d8;
+        --muted2: #a1a1aa;
       }
       body {
         margin: 0;
@@ -2255,7 +2263,7 @@ function adminFilesEditorHtml() {
         border: 1px solid var(--border);
         border-radius: 10px;
         padding: 10px;
-        background: #10151d;
+        background: var(--card);
         overflow: auto;
         max-height: 70vh;
       }
@@ -2277,7 +2285,7 @@ function adminFilesEditorHtml() {
         border: 1px solid var(--border);
         border-radius: 10px;
         padding: 12px;
-        background: #10151d;
+        background: var(--card);
       }
       label {
         display: block;
@@ -2286,12 +2294,12 @@ function adminFilesEditorHtml() {
         color: var(--muted);
         margin-bottom: 6px;
       }
-      input[type="text"], textarea {
+      input, textarea, select {
         width: 100%;
         box-sizing: border-box;
         border: 1px solid var(--border);
         border-radius: 8px;
-        background: #010409;
+        background: #52525b;
         color: var(--fg);
         padding: 10px 12px;
         font-size: 14px;
@@ -2313,16 +2321,16 @@ function adminFilesEditorHtml() {
         padding: 10px 14px;
         border: 1px solid var(--border);
         border-radius: 10px;
-        background: transparent;
+        background: #52525b;
         color: var(--fg);
         font-weight: 900;
       }
       button.primary {
-        background: #2d333d;
+        background: #71717a;
       }
       button.danger {
-        border-color: #d2a8a8;
-        color: #f2cbdc;
+        border-color: #fca5a5;
+        color: #7f1d1d;
       }
       .status {
         margin-top: 10px;
@@ -2332,6 +2340,7 @@ function adminFilesEditorHtml() {
         color: var(--muted);
         font-size: 13px;
         min-height: 18px;
+        background: var(--card);
       }
       img.preview {
         max-width: 100%;
@@ -2350,10 +2359,6 @@ function adminFilesEditorHtml() {
   <body>
     <div class="card">
       <h1>Редактор контента вики</h1>
-      <div class="muted">
-        Редактируй только содержимое страниц вики (WYSIWYG) и загружай картинки через серверную прокси.
-        Путь и ветка валидируются на сервере.
-      </div>
       <div id="app"></div>
     </div>
     <script>
@@ -2385,6 +2390,7 @@ function adminFilesEditorHtml() {
       }
 
       function renderLogin(errMsg) {
+        if (String(errMsg || "") === "Unauthorized") errMsg = "";
         appEl.innerHTML =
           '<div class="panel anim">' +
           '<div style="font-weight:900;margin-bottom:10px">Вход</div>' +
@@ -2395,7 +2401,7 @@ function adminFilesEditorHtml() {
           '<div class="row">' +
           '<button class="primary" id="loginBtn" type="button">Войти</button>' +
           '</div>' +
-          '<div class="status" id="st">' + (errMsg ? esc(errMsg) : "") + '</div>' +
+          (errMsg ? ('<div class="status" id="st">' + esc(errMsg) + "</div>") : '<div id="st" style="display:none"></div>') +
           "</div>";
 
         document.getElementById("loginBtn").addEventListener("click", async function () {
@@ -3153,7 +3159,7 @@ function adminFilesEditorHtml() {
               parentBtn.addEventListener("click", async function () {
                 // If user clicks the parent, also open the corresponding page.
                 await loadFile(hrefToPagePath(it.href || it.children[0].href, wikiLang));
-                const base = String((it.href || it.children[0].href || "").split("#")[0] || "").replace(/^en\//, "");
+                const base = String((it.href || it.children[0].href || "").split("#")[0] || "").replace(/^en\\//, "");
                 wikiActiveBasePath = base || wikiActiveBasePath;
                 // Toggle children visibility.
                 open = !open;
@@ -3170,7 +3176,7 @@ function adminFilesEditorHtml() {
                 b.style.padding = "7px 10px";
                 b.addEventListener("click", async function () {
                   await loadFile(hrefToPagePath(ch.href || it.href, wikiLang));
-                  wikiActiveBasePath = String((ch.href || it.href || "").split("#")[0] || "").replace(/^en\//, "") || wikiActiveBasePath;
+                  wikiActiveBasePath = String((ch.href || it.href || "").split("#")[0] || "").replace(/^en\\//, "") || wikiActiveBasePath;
                   renderWikiNav();
                 });
                 childWrap.appendChild(b);
@@ -3188,7 +3194,7 @@ function adminFilesEditorHtml() {
               b.textContent = String(it.label || "");
               b.addEventListener("click", async function () {
                 await loadFile(hrefToPagePath(it.href || "index.html", wikiLang));
-                wikiActiveBasePath = String((it.href || "index.html").split("#")[0] || "").replace(/^en\//, "") || wikiActiveBasePath;
+                wikiActiveBasePath = String((it.href || "index.html").split("#")[0] || "").replace(/^en\\//, "") || wikiActiveBasePath;
                 renderWikiNav();
               });
               holder.appendChild(b);

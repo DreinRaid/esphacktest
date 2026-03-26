@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Firmware features — ESP-HACK</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <script src="../js/site-nav.js" defer></script>
+  </head>
+  <body>
+    <div class="lang-switch lang-switch--en" role="navigation" aria-label="Language">
+      <div class="lang-switch__track">
+        <span class="lang-switch__thumb" aria-hidden="true"></span>
+        <a href="../page-features.html" class="lang-switch__opt">RU</a>
+        <span class="lang-switch__opt lang-switch__opt--current" aria-current="page">EN</span>
+      </div>
+    </div>
+    <div class="shell shell--nav-left">
+      <aside class="sidebar" aria-label="Wiki navigation">
+        <div class="sidebar__inner">
+          <div class="sidebar__brand">ESP-HACK</div>
+          <nav aria-label="Wiki sections">
+            <div id="site-nav-container"></div>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="content__wrap">
+          <h1>Firmware features</h1>
+          <p>
+            A compact feature list by category. Exact availability depends on firmware version and connected modules
+            (CC1101 / NRF24 / IR / SD, etc.).
+          </p>
+
+          <h2 id="wifi">📶 Wi‑Fi</h2>
+          <ul>
+            <li><strong>📡 Beacon Spam</strong> — broadcast many fake SSIDs (clutter the Wi‑Fi list).</li>
+            <li><strong>🕸️ Evil Portal</strong> — run an AP with a captive portal landing page.</li>
+            <li><strong>🗺️ Wardriving</strong> — scan/log nearby networks.</li>
+            <li><strong>📦 Packets</strong> — Wi‑Fi packet tools (analysis/sending, where available).</li>
+          </ul>
+
+          <h2 id="bluetooth">🟦 Bluetooth / BLE</h2>
+          <ul>
+            <li><strong>📣 BLE-Spam</strong> — BLE advertisement spam (profiles for iOS/Android/Windows).</li>
+            <li><strong>🧪 BadBLE</strong> — BLE attack/emulation scenarios (build-dependent).</li>
+            <li><strong>🖱️ Mouse</strong> — BLE HID mouse emulation (if supported).</li>
+          </ul>
+
+          <h2 id="subghz">📻 Sub‑GHz (CC1101)</h2>
+          <ul>
+            <li><strong>📥 Read</strong> — receive & decode supported protocols.</li>
+            <li><strong>📤 Send</strong> — transmit decoded packets.</li>
+            <li><strong>🎙️ RAW</strong> — record & replay raw RF (record/send).</li>
+            <li><strong>🔎 Analyzer</strong> — signal analysis helpers.</li>
+            <li><strong>🔁 Bruteforce</strong> — code bruteforce for selected protocols (Came/Nice/Ansonic/Holtek/Chamberlain, etc.).</li>
+            <li><strong>🚫 Jammer</strong> — jamming (often illegal; use only where permitted).</li>
+          </ul>
+
+          <h2 id="ir">🌈 Infrared (IR)</h2>
+          <ul>
+            <li><strong>📥 Read</strong> — capture IR codes.</li>
+            <li><strong>📤 Send</strong> — transmit IR codes.</li>
+            <li><strong>📺 TV / 📽️ PJ / ❄️ AC</strong> — ready-made presets (e.g. power off).</li>
+          </ul>
+
+          <h2 id="gpio">🧩 GPIO / modules</h2>
+          <ul>
+            <li><strong>🔑 iButton</strong> — read/write/config (with the required hardware).</li>
+            <li><strong>📶 NRF24</strong> — jammer/spectrum/config modes (build- and region-dependent).</li>
+            <li><strong>🧷 Serial</strong> — in development (if enabled in your build).</li>
+          </ul>
+
+          <h2 id="settings">⚙️ Settings</h2>
+          <ul>
+            <li><strong>🎨 Display color</strong> — UI theme/accent (display-dependent).</li>
+            <li><strong>⏲️ Standby time</strong> — sleep/standby timeout.</li>
+            <li><strong>ℹ️ About</strong> — build/version info.</li>
+          </ul>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
