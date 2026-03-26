@@ -169,7 +169,7 @@ a:hover {
 .sidebar__brand {
   font-family: var(--font-brand);
   font-weight: 800;
-  font-size: 17px;
+  font-size: 24px;
   letter-spacing: 0.02em;
   color: var(--gh-fg);
   padding: 4px 10px 16px;
@@ -228,8 +228,8 @@ h4 {
 }
 
 .nav-group a[aria-current="page"] {
-  background: var(--gh-accent-muted);
-  color: var(--gh-accent);
+  background: #4a525e;
+  color: #ffffff;
   font-weight: 500;
 }
 
