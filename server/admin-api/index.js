@@ -16,6 +16,8 @@ const GH_OWNER = process.env.GH_OWNER || process.env.GITHUB_OWNER || "";
 const GH_REPO = process.env.GH_REPO || process.env.GITHUB_REPO || "";
 const GH_BRANCH = process.env.GH_BRANCH || process.env.GITHUB_BRANCH || "main";
 const GITHUB_TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN || "";
+const USE_LOCAL_FS = String(process.env.ADMIN_LOCAL_FS || "true").toLowerCase() !== "false";
+const SITE_ROOT = path.resolve(process.env.SITE_ROOT || path.join(__dirname, "..", ".."));
 
 const ALLOWED_PATHS = (() => {
   // Keep the same set of JSON files as in client EDITABLE.
@@ -98,8 +100,8 @@ async function ghFetchJson(path, token, opts) {
 }
 
 function requireAuth(req, res, next) {
-  if (req.session && req.session.adminUser) return next();
-  res.status(401).json({ ok: false, message: "Unauthorized" });
+  // Local-only mode: auth disabled
+  return next();
 }
 
 const CORS_ORIGIN =
@@ -3359,14 +3361,51 @@ app.post("/api/admin/login", async function (req, res) {
 });
 
 app.get("/api/admin/whoami", requireAuth, function (req, res) {
-  res.json({ ok: true, user: req.session.adminUser });
+  res.json({ ok: true, user: "local" });
 });
 
 app.get("/api/admin/list", requireAuth, async function (req, res) {
   try {
     const branch = String(req.query.branch || GH_BRANCH);
-    if (branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
     const inputPath = String(req.query.path || "").replace(/^\.?\//, "");
+    if (!USE_LOCAL_FS && branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+
+    if (USE_LOCAL_FS) {
+      const safe = inputPath ? validatePath(inputPath) : "";
+      if (inputPath && !safe) return res.status(403).json({ ok: false, message: "Path not allowed" });
+      const relPath = safe || "";
+      const abs = resolveLocalPath(relPath || ".");
+      if (!abs) return res.status(403).json({ ok: false, message: "Path not allowed" });
+
+      if (!fs.existsSync(abs)) {
+        return res.status(404).json({ ok: false, message: "Path not found" });
+      }
+
+      const st = fs.statSync(abs);
+      if (!st.isDirectory()) {
+        return res.json({ ok: true, path: relPath, branch, items: [], file: true });
+      }
+
+      const names = fs.readdirSync(abs, { withFileTypes: true });
+      const items = names.map(function (it) {
+        const rel = relPath ? relPath + "/" + it.name : it.name;
+        let size = 0;
+        try {
+          size = fs.statSync(path.join(abs, it.name)).size;
+        } catch (e) {}
+        return {
+          name: it.name,
+          path: rel.replace(/\\/g, "/"),
+          type: it.isDirectory() ? "dir" : "file",
+          sha: "",
+          download_url: "",
+          size: size,
+          content_type: "",
+        };
+      });
+
+      return res.json({ ok: true, path: relPath, branch, items });
+    }
 
     // Empty path = repository root
     if (!inputPath) {
@@ -3453,12 +3492,28 @@ function validatePath(inputPath) {
   return "";
 }
 
+function resolveLocalPath(relPath) {
+  const abs = path.resolve(SITE_ROOT, relPath);
+  const rootNorm = SITE_ROOT.endsWith(path.sep) ? SITE_ROOT : SITE_ROOT + path.sep;
+  const absNorm = abs.endsWith(path.sep) ? abs : abs + path.sep;
+  if (abs === SITE_ROOT || absNorm.indexOf(rootNorm) === 0) return abs;
+  return "";
+}
+
 app.get("/api/admin/contents", requireAuth, async function (req, res) {
   try {
     const path = validatePath(req.query.path);
     const branch = String(req.query.branch || GH_BRANCH);
     if (!path) return res.status(403).json({ ok: false, message: "Path not allowed" });
-    if (branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+    if (!USE_LOCAL_FS && branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+
+    if (USE_LOCAL_FS) {
+      const abs = resolveLocalPath(path);
+      if (!abs) return res.status(403).json({ ok: false, message: "Path not allowed" });
+      if (!fs.existsSync(abs)) return res.status(404).json({ ok: false, message: "Path not found" });
+      const content = fs.readFileSync(abs, "utf8");
+      return res.json({ ok: true, path, branch, content });
+    }
     if (!GH_OWNER || !GH_REPO || !GITHUB_TOKEN) return res.status(500).json({ ok: false, message: "GitHub env not configured" });
 
     const ghPath = "/repos/" + encodeURIComponent(GH_OWNER) + "/" + encodeURIComponent(GH_REPO) + "/contents/" + encodeGitHubPath(path);
@@ -3480,7 +3535,19 @@ app.post("/api/admin/commit", requireAuth, async function (req, res) {
     const isBinary = !!contentBase64;
 
     if (!path) return res.status(403).json({ ok: false, message: "Path not allowed" });
-    if (branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+    if (!USE_LOCAL_FS && branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+
+    if (USE_LOCAL_FS) {
+      const abs = resolveLocalPath(path);
+      if (!abs) return res.status(403).json({ ok: false, message: "Path not allowed" });
+      fs.mkdirSync(path.dirname(abs), { recursive: true });
+      if (isBinary) {
+        fs.writeFileSync(abs, Buffer.from(contentBase64, "base64"));
+      } else {
+        fs.writeFileSync(abs, text, "utf8");
+      }
+      return res.json({ ok: true });
+    }
     if (!GH_OWNER || !GH_REPO || !GITHUB_TOKEN) return res.status(500).json({ ok: false, message: "GitHub env not configured" });
 
     // Load sha from GitHub.
@@ -3532,7 +3599,13 @@ app.post("/api/admin/delete", requireAuth, async function (req, res) {
     const targetPath = validatePath(body.path);
     const branch = String(body.branch || GH_BRANCH);
     if (!targetPath) return res.status(403).json({ ok: false, message: "Path not allowed" });
-    if (branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+    if (!USE_LOCAL_FS && branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+    if (USE_LOCAL_FS) {
+      const abs = resolveLocalPath(targetPath);
+      if (!abs || !fs.existsSync(abs)) return res.status(404).json({ ok: false, message: "Path not found" });
+      fs.unlinkSync(abs);
+      return res.json({ ok: true });
+    }
     if (!GH_OWNER || !GH_REPO || !GITHUB_TOKEN) return res.status(500).json({ ok: false, message: "GitHub env not configured" });
 
     const getPath =
@@ -3580,7 +3653,16 @@ app.post("/api/admin/move", requireAuth, async function (req, res) {
     const toPath = validatePath(body.toPath);
     const branch = String(body.branch || GH_BRANCH);
     if (!fromPath || !toPath) return res.status(403).json({ ok: false, message: "Path not allowed" });
-    if (branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+    if (!USE_LOCAL_FS && branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
+    if (USE_LOCAL_FS) {
+      const srcAbs = resolveLocalPath(fromPath);
+      const dstAbs = resolveLocalPath(toPath);
+      if (!srcAbs || !dstAbs) return res.status(403).json({ ok: false, message: "Path not allowed" });
+      if (!fs.existsSync(srcAbs)) return res.status(404).json({ ok: false, message: "Source not found" });
+      fs.mkdirSync(path.dirname(dstAbs), { recursive: true });
+      fs.renameSync(srcAbs, dstAbs);
+      return res.json({ ok: true });
+    }
     if (!GH_OWNER || !GH_REPO || !GITHUB_TOKEN) return res.status(500).json({ ok: false, message: "GitHub env not configured" });
     if (fromPath === toPath) return res.json({ ok: true });
 
@@ -3701,11 +3783,19 @@ app.post("/api/admin/page/create", requireAuth, async function (req, res) {
     const slug = slugifyPageName(body.slug || title);
     const branch = String(body.branch || GH_BRANCH);
     if (!slug) return res.status(400).json({ ok: false, message: "Bad slug" });
-    if (branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
-    if (!GH_OWNER || !GH_REPO || !GITHUB_TOKEN) return res.status(500).json({ ok: false, message: "GitHub env not configured" });
+    if (!USE_LOCAL_FS && branch !== GH_BRANCH) return res.status(403).json({ ok: false, message: "Branch not allowed" });
 
     const filePath = validatePath("page-" + slug + ".html");
     if (!filePath) return res.status(403).json({ ok: false, message: "Path not allowed" });
+
+    if (USE_LOCAL_FS) {
+      const abs = resolveLocalPath(filePath);
+      if (!abs) return res.status(403).json({ ok: false, message: "Path not allowed" });
+      if (fs.existsSync(abs)) return res.status(409).json({ ok: false, message: "Page already exists" });
+      fs.writeFileSync(abs, pageTemplateRu(title), "utf8");
+      return res.json({ ok: true, path: filePath });
+    }
+    if (!GH_OWNER || !GH_REPO || !GITHUB_TOKEN) return res.status(500).json({ ok: false, message: "GitHub env not configured" });
 
     const putPath =
       "/repos/" +
