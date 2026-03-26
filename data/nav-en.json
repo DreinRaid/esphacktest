@@ -7,15 +7,29 @@
         {
           "type": "expand",
           "id": "flash",
-          "label": "Flashing",
+          "label": "Install / flashing",
           "href": "page-flash.html",
           "openOn": [{ "file": "page-flash.html" }],
           "children": [
-            { "label": "Firmware features", "href": "page-features.html" },
             { "label": "Web flasher (this site)", "href": "page-flash.html#web-flasher" },
             { "label": "Web flasher (external)", "href": "page-flash.html#universal" },
             { "label": "qESPHACK (automatic)", "href": "page-flash.html#automatic" },
             { "label": "qESPHACK", "href": "page-flash.html#qesphack" }
+          ]
+        },
+        {
+          "type": "expand",
+          "id": "firmware-features",
+          "label": "Firmware features",
+          "href": "page-features.html",
+          "openOn": [{ "file": "page-features.html" }],
+          "children": [
+            { "label": "📶 Wi‑Fi", "href": "page-features.html#wifi" },
+            { "label": "🟦 Bluetooth / BLE", "href": "page-features.html#bluetooth" },
+            { "label": "📻 Sub‑GHz (CC1101)", "href": "page-features.html#subghz" },
+            { "label": "🌈 IR", "href": "page-features.html#ir" },
+            { "label": "🧩 GPIO / modules", "href": "page-features.html#gpio" },
+            { "label": "⚙️ Settings", "href": "page-features.html#settings" }
           ]
         },
         {

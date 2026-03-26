@@ -11,7 +11,7 @@
         {
           "type": "expand",
           "id": "flash",
-          "label": "Прошивка",
+          "label": "Установка / прошивка",
           "href": "page-flash.html",
           "openOn": [
             {
@@ -19,10 +19,6 @@
             }
           ],
           "children": [
-            {
-              "label": "Функции прошивки",
-              "href": "page-features.html"
-            },
             {
               "label": "Веб-прошивальщик",
               "href": "page-flash.html#web-flasher"
@@ -39,6 +35,25 @@
               "label": "qESPHACK",
               "href": "page-flash.html#qesphack"
             }
+          ]
+        },
+        {
+          "type": "expand",
+          "id": "firmware-features",
+          "label": "Функции прошивки",
+          "href": "page-features.html",
+          "openOn": [
+            {
+              "file": "page-features.html"
+            }
+          ],
+          "children": [
+            { "label": "📶 Wi‑Fi", "href": "page-features.html#wifi" },
+            { "label": "🟦 Bluetooth / BLE", "href": "page-features.html#bluetooth" },
+            { "label": "📻 Sub‑GHz (CC1101)", "href": "page-features.html#subghz" },
+            { "label": "🌈 IR", "href": "page-features.html#ir" },
+            { "label": "🧩 GPIO / модули", "href": "page-features.html#gpio" },
+            { "label": "⚙️ Настройки", "href": "page-features.html#settings" }
           ]
         },
         {
