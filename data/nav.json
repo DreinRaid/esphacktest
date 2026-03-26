@@ -3,18 +3,38 @@
     {
       "label": "Разделы",
       "items": [
-        { "type": "link", "label": "Главная", "href": "index.html" },
+        {
+          "type": "link",
+          "label": "Главная",
+          "href": "index.html"
+        },
         {
           "type": "expand",
           "id": "flash",
           "label": "Прошивка",
           "href": "page-flash.html",
-          "openOn": [{ "file": "page-flash.html" }],
+          "openOn": [
+            {
+              "file": "page-flash.html"
+            }
+          ],
           "children": [
-            { "label": "Веб-прошивальщик", "href": "page-flash.html#web-flasher" },
-            { "label": "Универсальный способ", "href": "page-flash.html#universal" },
-            { "label": "Автоматический способ", "href": "page-flash.html#automatic" },
-            { "label": "qESPHACK", "href": "page-flash.html#qesphack" }
+            {
+              "label": "Веб-прошивальщик",
+              "href": "page-flash.html#web-flasher"
+            },
+            {
+              "label": "Универсальный способ",
+              "href": "page-flash.html#universal"
+            },
+            {
+              "label": "Автоматический способ",
+              "href": "page-flash.html#automatic"
+            },
+            {
+              "label": "qESPHACK",
+              "href": "page-flash.html#qesphack"
+            }
           ]
         },
         {
@@ -22,9 +42,16 @@
           "id": "modules",
           "label": "Модули",
           "href": "page-modules.html",
-          "openOn": [{ "file": "page-modules.html" }],
+          "openOn": [
+            {
+              "file": "page-modules.html"
+            }
+          ],
           "children": [
-            { "label": "Как подключить NRF24", "href": "page-modules.html#nrf24" }
+            {
+              "label": "Как подключить NRF24",
+              "href": "page-modules.html#nrf24"
+            }
           ]
         }
       ]
