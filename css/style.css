@@ -167,6 +167,7 @@ a:hover {
 }
 
 .sidebar__brand {
+  display: block;
   font-family: var(--font-brand);
   font-weight: 800;
   font-size: 24px;
@@ -176,6 +177,15 @@ a:hover {
   border-bottom: 1px solid var(--gh-border-muted);
   margin-bottom: 16px;
   text-transform: lowercase;
+  text-decoration: none;
+}
+
+a.sidebar__brand,
+a.sidebar__brand:visited,
+a.sidebar__brand:hover,
+a.sidebar__brand:active {
+  color: var(--gh-fg);
+  text-decoration: none;
 }
 
 h1,
